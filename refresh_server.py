@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
 """
-Simple local server for the VA Dashboard.
-- Serves the dashboard
-- /refresh endpoint re-pulls data and regenerates the HTML
+Simple server for the VA Dashboard.
+Works locally and on Render.
 """
 
 import json
 import os
 import subprocess
-from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-import urllib.parse
 
-PORT = 8080
-BASE_DIR = "/workspace/artifacts"
+PORT = int(os.environ.get("PORT", 8080))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class DashboardHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
 
     def do_GET(self):
-        if self.path == "/refresh":
+        if self.path == "/refresh" or self.path.startswith("/refresh?"):
             self.handle_refresh()
         else:
             super().do_GET()
@@ -28,12 +25,12 @@ class DashboardHandler(SimpleHTTPRequestHandler):
     def handle_refresh(self):
         print("Refresh requested...")
         try:
-            # Run the data refresh script
             result = subprocess.run(
-                ["python3", "/workspace/artifacts/full_refresh.py"],
+                ["python3", os.path.join(BASE_DIR, "full_refresh.py")],
                 capture_output=True,
                 text=True,
-                timeout=300
+                timeout=300,
+                cwd=BASE_DIR
             )
             if result.returncode == 0:
                 self.send_response(200)
@@ -54,6 +51,5 @@ class DashboardHandler(SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     os.chdir(BASE_DIR)
     server = HTTPServer(("0.0.0.0", PORT), DashboardHandler)
-    print(f"Dashboard server running at http://localhost:{PORT}/va_dashboard.html")
-    print("Press Ctrl+C to stop")
+    print(f"Dashboard server running on port {PORT}")
     server.serve_forever()
