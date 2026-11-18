@@ -115,7 +115,7 @@ def refresh_data():
 
 def background_refresh():
     while True:
-        time.sleep(3600)  # every hour
+        time.sleep(3600)
         try:
             refresh_data()
         except Exception as e:
@@ -141,12 +141,10 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
 if __name__ == "__main__":
-    # Initial data pull
     try:
         refresh_data()
     except Exception as e:
         print("Initial refresh failed:", e)
-    # Start background refresh thread
     t = threading.Thread(target=background_refresh, daemon=True)
     t.start()
     port = int(os.environ.get("PORT", 10000))
