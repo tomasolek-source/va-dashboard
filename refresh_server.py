@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Serves the VA dashboard and can refresh data from GHL + Slack."""
+"""VA Dashboard server with automatic data refresh."""
 import os
 import json
 import requests
+import threading
+import time
 from datetime import datetime, timedelta, timezone
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from collections import Counter
@@ -95,22 +97,29 @@ def pull_calls():
             print(f"Error pulling {loc_name}: {e}")
     return calls
 
-def pull_slack_transfers():
-    if not SLACK_TOKEN:
-        return []
-    transfers = []
-    # Placeholder — expand with actual Slack channel logic as needed
-    return transfers
-
 def refresh_data():
+    print("Refreshing data...")
     calls = pull_calls()
-    transfers = pull_slack_transfers()
     lead_counts = Counter((c["contact_id"], c["location"]) for c in calls)
     single_dials = [c for c in calls if lead_counts[(c["contact_id"], c["location"])] == 1][:150]
-    data = {"calls": calls, "transfers": transfers, "single_dials": single_dials, "updated": datetime.now().isoformat()}
+    data = {
+        "calls": calls,
+        "transfers": [],
+        "single_dials": single_dials,
+        "updated": datetime.now().isoformat()
+    }
     with open("dashboard_data.json", "w") as f:
         json.dump(data, f)
+    print(f"Refresh complete: {len(calls)} calls")
     return data
+
+def background_refresh():
+    while True:
+        time.sleep(3600)  # every hour
+        try:
+            refresh_data()
+        except Exception as e:
+            print("Background refresh error:", e)
 
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -119,6 +128,7 @@ class Handler(SimpleHTTPRequestHandler):
                 refresh_data()
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
                 self.wfile.write(b'{"status":"ok"}')
             except Exception as e:
@@ -126,16 +136,19 @@ class Handler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(str(e).encode())
             return
-        if self.path in ("/", "/va_dashboard.html"):
+        if self.path in ("/", "/index.html"):
             self.path = "/va_dashboard.html"
         return super().do_GET()
 
 if __name__ == "__main__":
-    if not os.path.exists("dashboard_data.json"):
-        try:
-            refresh_data()
-        except Exception as e:
-            print("Initial refresh failed:", e)
+    # Initial data pull
+    try:
+        refresh_data()
+    except Exception as e:
+        print("Initial refresh failed:", e)
+    # Start background refresh thread
+    t = threading.Thread(target=background_refresh, daemon=True)
+    t.start()
     port = int(os.environ.get("PORT", 10000))
     print(f"Starting server on port {port}")
     HTTPServer(("0.0.0.0", port), Handler).serve_forever()
