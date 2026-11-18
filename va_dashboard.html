@@ -1,1 +1,158 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VA Dashboard — Detail Domination</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#F8F9FB; --card:#FFFFFF; --text:#1D1D1F; --muted:#6B7280; --accent:#2563EB; --success:#10B981; --warning:#F59E0B; --border:#E5E7EB; --sidebar:#FFFFFF; --radius:16px; }
+[data-theme="dark"] { --bg:#0F1117; --card:#1C1C1E; --text:#F5F5F7; --muted:#9CA3AF; --accent:#3B82F6; --success:#34D399; --warning:#FBBF24; --border:#2D2D30; --sidebar:#161618; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:Inter,-apple-system,system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+.app { display:flex; min-height:100vh; }
+.sidebar { width:240px; background:var(--sidebar); border-right:1px solid var(--border); padding:24px 16px; flex-shrink:0; }
+.brand { display:flex; align-items:center; gap:10px; margin-bottom:28px; padding:0 8px; }
+.brand-logo { width:32px; height:32px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; }
+.brand-text { font-weight:600; font-size:15px; }
+.brand-sub { font-size:11px; color:var(--muted); }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; cursor:pointer; color:var(--muted); font-weight:500; font-size:13px; margin-bottom:2px; }
+.nav-item:hover { background:var(--bg); color:var(--text); }
+.nav-item.active { background:#EFF6FF; color:var(--accent); }
+[data-theme="dark"] .nav-item.active { background:#1E3A5F; }
+.main { flex:1; padding:24px 32px; overflow-x:auto; }
+.topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px; position:sticky; top:0; background:var(--bg); z-index:10; padding:12px 0; }
+.topbar h1 { font-size:20px; font-weight:600; }
+.topbar-sub { font-size:13px; color:var(--muted); }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.pill { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:13px; }
+.btn { background:var(--accent); color:white; border:none; border-radius:8px; padding:8px 14px; font-size:13px; font-weight:500; cursor:pointer; }
+.btn-sec { background:var(--card); color:var(--text); border:1px solid var(--border); }
+.controls { display:flex; gap:10px; align-items:center; margin-bottom:16px; flex-wrap:wrap; }
+select, input[type="text"], input[type="date"] { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 12px; color:var(--text); font-size:13px; }
+.summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:24px; }
+.scard { background:var(--card); border-radius:var(--radius); padding:16px; border:1px solid var(--border); }
+.scard .label { font-size:12px; color:var(--muted); font-weight:500; }
+.scard .value { font-size:26px; font-weight:700; margin:4px 0; }
+.progress { height:6px; background:var(--border); border-radius:3px; margin-top:8px; }
+.progress-fill { height:100%; background:var(--accent); border-radius:3px; }
+.chart-card { background:var(--card); border-radius:var(--radius); padding:18px; border:1px solid var(--border); margin-bottom:16px; }
+.chart-card h3 { font-size:14px; font-weight:600; margin-bottom:12px; }
+.bar-row { display:flex; align-items:center; gap:8px; margin:4px 0; }
+.bar-label { width:50px; font-size:12px; color:var(--muted); }
+.bar-bg { flex:1; height:18px; background:var(--border); border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; background:var(--accent); }
+.bar-count { width:40px; font-size:12px; text-align:right; }
+.leaderboard { background:var(--card); border-radius:var(--radius); padding:18px; border:1px solid var(--border); margin-bottom:16px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { text-align:left; padding:10px 12px; color:var(--muted); font-weight:500; font-size:12px; border-bottom:1px solid var(--border); }
+td { padding:12px; border-bottom:1px solid var(--border); }
+.avatar { width:28px; height:28px; border-radius:50%; color:white; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; margin-right:8px; }
+.score-pill { background:#ECFDF5; color:#059669; padding:4px 10px; border-radius:12px; font-weight:600; font-size:12px; }
+.flag { color:var(--warning); font-weight:600; }
+.clickable { cursor:pointer; }
+.clickable:hover { background:var(--bg); }
+.account-card { background:var(--card); border-radius:var(--radius); padding:16px; border:1px solid var(--border); margin-bottom:12px; }
+.account-card h4 { margin-bottom:8px; }
+@media print { .sidebar, .controls, .btn { display:none !important; } .main { padding:0; } }
+@media (max-width:768px) { .sidebar { display:none; } .summary { grid-template-columns:1fr 1fr; } .main { padding:16px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-logo">D</div><div><div class="brand-text">Detail Domination</div><div class="brand-sub">VA Operations</div></div></div>
+    <div class="nav-item active" onclick="setView('overview')">Overview</div>
+    <div class="nav-item" onclick="setView('leaderboard')">Team Leaderboard</div>
+    <div class="nav-item" onclick="setView('bonuses')">Weekly Bonuses</div>
+    <div class="nav-item" onclick="setView('accounts')">Client Accounts</div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div><h1 id="page-title">VA Dashboard</h1><div class="topbar-sub">Call Performance, Transfers & Team Productivity</div></div>
+      <div class="topbar-right">
+        <div class="pill" id="last-updated">Loading...</div>
+        <button class="btn" onclick="doRefresh()">Refresh</button>
+        <button class="btn btn-sec" onclick="exportCSV()">Export CSV</button>
+        <button class="btn btn-sec" onclick="toggleTheme()">Theme</button>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn btn-sec" onclick="setRange('today')">Today</button>
+      <button class="btn btn-sec" onclick="setRange('week')">This Week</button>
+      <select id="range" onchange="applyFilter()">
+        <option value="7">Last 7 days</option>
+        <option value="14" selected>Last 14 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="custom">Custom range</option>
+      </select>
+      <input type="date" id="fromDate" style="display:none;" onchange="render()">
+      <input type="date" id="toDate" style="display:none;" onchange="render()">
+      <input type="text" id="search" placeholder="Search VA..." oninput="render()" style="width:180px;">
+    </div>
+    <div id="content"><p style="color:var(--muted);">Loading data...</p></div>
+  </main>
+</div>
+<script>
+let RAW = {calls:[], transfers:[], single_dials:[]};
+const VA_COLORS = {};
+let currentView = "overview";
+let currentVA = null;
+let customRange = null;
+async function loadData() {
+  try {
+    const resp = await fetch("/dashboard_data.json?t=" + Date.now());
+    if (resp.ok) {
+      RAW = await resp.json();
+      const vas = [...new Set(RAW.calls.map(c => c.va).filter(v => v && v !== "Unknown"))];
+      const colors = ["#2563EB","#7C3AED","#DB2777","#EA580C","#059669","#0891B2"];
+      vas.forEach((va,i) => VA_COLORS[va] = colors[i % colors.length]);
+      if (RAW.updated) document.getElementById("last-updated").textContent = "Updated: " + RAW.updated.slice(0,16).replace("T"," ");
+    }
+  } catch(e) { console.error(e); }
+  render();
+}
+function doRefresh() {
+  const btn = event.target;
+  btn.textContent = "Refreshing...";
+  fetch("/refresh").then(() => { btn.textContent = "Refresh"; loadData(); }).catch(() => { btn.textContent = "Refresh"; loadData(); });
+}
+function fmtDur(s) { if (!s) return "0s"; const h=Math.floor(s/3600), m=Math.floor((s%3600)/60); return h>0 ? h+"h "+m+"m" : m+"m "+Math.round(s%60)+"s"; }
+function initials(name) { return name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(); }
+function getFiltered() {
+  let fromDate = null, toDate = null;
+  const rangeVal = document.getElementById("range").value;
+  if (customRange === "today") { fromDate = new Date(); fromDate.setHours(0,0,0,0); toDate = new Date(fromDate); toDate.setDate(toDate.getDate()+1); }
+  else if (customRange === "week") { fromDate = new Date(); const day=fromDate.getDay(); fromDate.setDate(fromDate.getDate() - (day===0?6:day-1)); fromDate.setHours(0,0,0,0); toDate = new Date(fromDate); toDate.setDate(toDate.getDate()+7); }
+  else if (rangeVal === "custom") { const f = document.getElementById("fromDate").value; const t = document.getElementById("toDate").value; if (f) fromDate = new Date(f); if (t) { toDate = new Date(t); toDate.setDate(toDate.getDate()+1); } }
+  else { const days = parseInt(rangeVal)||14; fromDate = new Date(); fromDate.setDate(fromDate.getDate()-days); }
+  const q = (document.getElementById("search").value||"").toLowerCase();
+  return {
+    calls: RAW.calls.filter(c => { const d = new Date(c.date_only); return (!fromDate || d >= fromDate) && (!toDate || d < toDate) && (!q || (c.va||"").toLowerCase().includes(q)); }),
+    transfers: (RAW.transfers||[]).filter(t => { const d = new Date(t.date_only); return (!fromDate || d >= fromDate) && (!toDate || d < toDate) && (!q || (t.va||"").toLowerCase().includes(q)); }),
+    single_dials: (RAW.single_dials||[]).filter(s => { const d = new Date(s.date_only); return (!fromDate || d >= fromDate) && (!toDate || d < toDate) && (!q || (s.va||"").toLowerCase().includes(q)); })
+  };
+}
+function compute(calls, transfers, singles) {
+  const s = {};
+  calls.forEach(c => { if (!c.va || c.va === "Unknown") return; if (!s[c.va]) s[c.va]={calls:0,talk:0,transfers:0,singles:0,byLoc:{},byHour:{}}; s[c.va].calls++; s[c.va].talk+=c.duration_sec||0; s[c.va].byLoc[c.location]=(s[c.va].byLoc[c.location]||0)+1; if(c.hour!=null) s[c.va].byHour[c.hour]=(s[c.va].byHour[c.hour]||0)+1; });
+  transfers.forEach(t => { const va=t.va; if(!va || va==="Unknown") return; if(!s[va]) s[va]={calls:0,talk:0,transfers:0,singles:0,byLoc:{},byHour:{}}; s[va].transfers++; });
+  singles.forEach(sd => { if(!sd.va || sd.va==="Unknown") return; if(!s[sd.va]) s[sd.va]={calls:0,talk:0,transfers:0,singles:0,byLoc:{},byHour:{}}; s[sd.va].singles++; });
+  return s;
+}
+function toggleTheme() { const d=document.documentElement.getAttribute("data-theme")==="dark"; document.documentElement.setAttribute("data-theme",d?"light":"dark"); try{localStorage.setItem("theme",d?"light":"dark");}catch(e){} }
+function setView(v) { currentView=v; currentVA=null; document.querySelectorAll(".nav-item").forEach(el=>el.classList.remove("active")); event.currentTarget.classList.add("active"); document.getElementById("page-title").textContent = {overview:"VA Dashboard",leaderboard:"Team Leaderboard",bonuses:"Weekly Bonuses",accounts:"Client Accounts"}[v]||"VA Dashboard"; render(); }
+function setRange(r) { customRange=r; render(); }
+function applyFilter() { const range = document.getElementById("range").value; document.getElementById("fromDate").style.display = range === "custom" ? "inline-block" : "none"; document.getElementById("toDate").style.display = range === "custom" ? "inline-block" : "none"; customRange = null; render(); }
+function exportCSV() { const {calls,transfers,single_dials}=getFiltered(); const summary=compute(calls,transfers,single_dials); let csv="VA,Calls,Talk Time,Transfers,Transfer Rate,Single Dials\n"; Object.entries(summary).forEach(([va,s]) => { const rate=s.calls>0?((s.transfers/s.calls)*100).toFixed(1):"0"; csv+=va+","+s.calls+","+fmtDur(s.talk)+","+s.transfers+","+rate+"%,"+s.singles+"\n"; }); const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="va_dashboard.csv"; a.click(); }
+function render() { if (!RAW.calls.length) { document.getElementById("content").innerHTML = '<p style="color:var(--muted);">No data yet. Click Refresh to pull latest.</p>'; return; } const {calls,transfers,single_dials}=getFiltered(); if (currentVA) { renderVA(currentVA); return; } if (currentView==="overview") renderOverview(calls,transfers,single_dials); else if (currentView==="leaderboard") renderLeaderboard(calls,transfers,single_dials); else if (currentView==="bonuses") renderBonuses(calls,transfers,single_dials); else if (currentView==="accounts") renderAccounts(calls,transfers); }
+function renderOverview(calls,transfers,singles) { const summary=compute(calls,transfers,singles); const totalCalls=calls.length, totalTalk=calls.reduce((a,c)=>a+(c.duration_sec||0),0), totalTransfers=transfers.length; const rate=totalCalls>0?((totalTransfers/totalCalls)*100).toFixed(1):"N/A"; const vas=Object.keys(summary).sort((a,b)=>summary[b].calls-summary[a].calls); let html='<div class="summary">'; html+='<div class="scard"><div class="label">Outbound Calls</div><div class="value">'+totalCalls.toLocaleString()+'</div></div>'; html+='<div class="scard"><div class="label">Successful Transfers</div><div class="value">'+totalTransfers+'</div></div>'; html+='<div class="scard"><div class="label">Transfer Rate</div><div class="value">'+rate+(rate!=="N/A"?"%":"")+'</div></div>'; html+='<div class="scard"><div class="label">Total Talk Time</div><div class="value">'+fmtDur(totalTalk)+'</div></div>'; html+='<div class="scard"><div class="label">Single Dials</div><div class="value">'+singles.length+'</div></div>'; html+='</div>'; const byDay={}; calls.forEach(c=>{ byDay[c.date_only]=(byDay[c.date_only]||0)+1; }); const days=Object.keys(byDay).sort().slice(-14); const maxDay=Math.max(...Object.values(byDay),1); let chart='<div class="chart-card"><h3>Calls Over Time</h3>'; days.forEach(d=>{ const w=Math.round((byDay[d]/maxDay)*100); chart+='<div class="bar-row"><div class="bar-label">'+d.slice(5)+'</div><div class="bar-bg"><div class="bar-fill" style="width:'+w+'%"></div></div><div class="bar-count">'+byDay[d]+'</div></div>'; }); chart+='</div>'; html+=chart; html+='<div class="leaderboard"><h3>Team Overview</h3><table><thead><tr><th>VA</th><th>Calls</th><th>Target</th><th>Transfers</th><th>Rate</th><th>Talk</th><th>Single Dials</th></tr></thead><tbody>'; vas.forEach(va=>{ const s=summary[va]; const pct=Math.min(100,Math.round((s.calls/200)*100)); const rate=s.calls>0?((s.transfers/s.calls)*100).toFixed(1):"0"; const col=VA_COLORS[va]||"#2563EB"; html+='<tr class="clickable" onclick="openVA(\''+va.replace(/'/g,"\\\\'")+'\')"><td><span class="avatar" style="background:'+col+'">'+initials(va)+'</span>'+va+'</td><td>'+s.calls+'</td><td><div class="progress"><div class="progress-fill" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:var(--muted)">'+s.calls+'/200</div></td><td>'+s.transfers+'</td><td>'+rate+'%</td><td>'+fmtDur(s.talk)+'</td><td class="flag">'+s.singles+'</td></tr>'; }); html+='</tbody></table></div>'; document.getElementById("content").innerHTML=html; }
+function openVA(va) { currentVA=va; document.getElementById("page-title").textContent=va; render(); }
+function renderVA(va) { const {calls,transfers,single_dials}=getFiltered(); const vaCalls=calls.filter(c=>c.va===va).sort((a,b)=>b.date.localeCompare(a.date)); const vaTransfers=transfers.filter(t=>t.va===va); const vaSingles=single_dials.filter(s=>s.va===va); const s=compute(vaCalls,vaTransfers,vaSingles)[va]||{calls:0,talk:0,transfers:0,singles:0,byLoc:{},byHour:{}}; const hours=Object.keys(s.byHour).map(Number).sort((a,b)=>a-b); const maxH=Math.max(...Object.values(s.byHour),1); let hourHtml='<div class="chart-card"><h3>Calls by Hour</h3>'; hours.forEach(h=>{ const w=Math.round((s.byHour[h]/maxH)*100); hourHtml+='<div class="bar-row"><div class="bar-label">'+(h%12||12)+(h>=12?"PM":"AM")+'</div><div class="bar-bg"><div class="bar-fill" style="width:'+w+'%"></div></div><div class="bar-count">'+s.byHour[h]+'</div></div>'; }); hourHtml+='</div>'; const locRows=Object.entries(s.byLoc).sort((a,b)=>b[1]-a[1]).map(([l,c])=>'<tr><td>'+l+'</td><td>'+c+'</td></tr>').join(""); const recent=vaCalls.slice(0,20).map(c=>'<tr><td>'+(c.lead_name||"Unknown")+'</td><td>'+c.date+'</td><td>'+c.location+'</td><td>'+fmtDur(c.duration_sec)+'</td><td>'+c.status+'</td></tr>').join(""); const singles=vaSingles.slice(0,15).map(sd=>'<tr><td>'+(sd.lead_name||"Unknown")+'</td><td>'+sd.date+'</td><td>'+sd.location+'</td><td>'+fmtDur(sd.duration_sec)+'</td></tr>').join(""); let html='<div class="summary"><div class="scard"><div class="label">Calls</div><div class="value">'+s.calls+'</div><div class="progress"><div class="progress-fill" style="width:'+Math.min(100,(s.calls/200)*100)+'%"></div></div><div style="font-size:11px;color:var(--muted)">'+s.calls+'/200</div></div>'; html+='<div class="scard"><div class="label">Talk Time</div><div class="value">'+fmtDur(s.talk)+'</div></div>'; html+='<div class="scard"><div class="label">Transfers</div><div class="value">'+s.transfers+'</div></div>'; html+='<div class="scard"><div class="label">Single Dials</div><div class="value flag">'+s.singles+'</div></div></div>'; html+=hourHtml; html+='<div class="leaderboard"><h3>Calls by Account</h3><table><thead><tr><th>Location</th><th>Calls</th></tr></thead><tbody>'+(locRows||'<tr><td colspan="2">No data</td></tr>')+'</tbody></table></div>'; html+='<div class="leaderboard"><h3>Single-Dial Leads (Flagged)</h3><table><thead><tr><th>Lead</th><th>Date</th><th>Location</th><th>Duration</th></tr></thead><tbody>'+(singles||'<tr><td colspan="4">None</td></tr>')+'</tbody></table></div>'; html+='<div class="leaderboard"><h3>Recent Calls</h3><table><thead><tr><th>Lead</th><th>Date</th><th>Location</th><th>Duration</th><th>Status</th></tr></thead><tbody>'+(recent||'<tr><td colspan="5">No calls</td></tr>')+'</tbody></table></div>'; document.getElementById("content").innerHTML=html; }
+function renderLeaderboard(calls,transfers,singles) { const summary=compute(calls,transfers,singles); const ranked=Object.entries(summary).sort((a,b)=>b[1].calls-a[1].calls); let html='<div class="leaderboard"><h3>Outbound Calls Leaderboard</h3><table><thead><tr><th>#</th><th>VA</th><th>Calls</th><th>Target</th><th>Transfers</th><th>Rate</th><th>Talk</th><th>Single Dials</th></tr></thead><tbody>'; ranked.forEach(([va,s],i)=>{ const rate=s.calls>0?((s.transfers/s.calls)*100).toFixed(1):"0"; const pct=Math.min(100,Math.round((s.calls/200)*100)); const col=VA_COLORS[va]||"#2563EB"; html+='<tr class="clickable" onclick="openVA(\''+va.replace(/'/g,"\\\\'")+'\')"><td>'+(i+1)+'</td><td><span class="avatar" style="background:'+col+'">'+initials(va)+'</span>'+va+'</td><td>'+s.calls+'</td><td><div class="progress"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+s.calls+'/200</td><td>'+s.transfers+'</td><td>'+rate+'%</td><td>'+fmtDur(s.talk)+'</td><td class="flag">'+s.singles+'</td></tr>'; }); html+='</tbody></table></div>'; document.getElementById("content").innerHTML=html; }
+function renderBonuses(calls,transfers,singles) { const summary=compute(calls,transfers,singles); const scored=Object.entries(summary).map(([va,s])=>{ const callScore=Math.min(100,(s.calls/200)*100)*0.30; const transferScore=Math.min(100,(s.transfers/5)*100)*0.35; const followScore=s.calls>0?Math.max(0,100-(s.singles/s.calls)*100)*0.20:0; const consistency=80*0.15; return {va,total:Math.round(callScore+transferScore+followScore+consistency),s}; }).sort((a,b)=>b.total-a.total); let html='<div class="leaderboard"><h3>Weekly Bonus Scores</h3><p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Weights: Calls 30% · Transfers 35% · Follow-up 20% · Consistency 15%</p><table><thead><tr><th>Rank</th><th>VA</th><th>Score</th><th>Calls</th><th>Transfers</th><th>Single Dials</th></tr></thead><tbody>'; scored.forEach((item,i)=>{ html+='<tr class="clickable" onclick="openVA(\''+item.va.replace(/'/g,"\\\\'")+'\')"><td>'+(i+1)+'</td><td>'+item.va+'</td><td><span class="score-pill">'+item.total+'</span></td><td>'+item.s.calls+'</td><td>'+item.s.transfers+'</td><td class="flag">'+item.s.singles+'</td></tr>'; }); html+='</tbody></table></div>'; document.getElementById("content").innerHTML=html; }
+function renderAccounts(calls,transfers) { const byLoc={}; calls.forEach(c=>{ if(!byLoc[c.location]) byLoc[c.location]={calls:0,talk:0,transfers:0,vas:new Set()}; byLoc[c.location].calls++; byLoc[c.location].talk+=c.duration_sec||0; if(c.va && c.va!=="Unknown") byLoc[c.location].vas.add(c.va); }); transfers.forEach(t=>{ if(byLoc[t.location]) byLoc[t.location].transfers++; }); const locations = Object.keys(byLoc).sort((a,b) => byLoc[b].calls - byLoc[a].calls); let html = '<div class="leaderboard"><h3>Client Accounts</h3>'; locations.forEach(loc => { const d = byLoc[loc]; html += '<div class="account-card"><h4>' + loc + '</h4><div style="font-size:13px; color:var(--muted); margin-bottom:8px;">VAs: ' + ([...d.vas].join(", ") || "None") + '</div><div style="display:flex; gap:20px; font-size:14px;"><span><strong>' + d.calls + '</strong> calls</span><span><strong>' + d.transfers + '</strong> transfers</span><span>' + fmtDur(d.talk) + ' talk time</span></div></div>'; }); html += '</div>'; document.getElementById("content").innerHTML = html; }
+(function(){ try{ if(localStorage.getItem("theme")==="dark") document.documentElement.setAttribute("data-theme","dark"); }catch(e){} loadData(); })();
+</script>
+</body>
+</html>
